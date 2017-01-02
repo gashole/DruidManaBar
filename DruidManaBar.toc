@@ -1,0 +1,12 @@
+## Interface: 11200
+## Title: DruidManaBar
+## Notes: Displays a mana bar when shapeshifted.
+## OptionalDeps: Ace2, DruidManaLib
+
+libs\AceLibrary\AceLibrary.lua
+libs\AceOO-2.0\AceOO-2.0.lua
+libs\AceAddon-2.0\AceAddon-2.0.lua
+libs\AceEvent-2.0\AceEvent-2.0.lua
+libs\DruidManaLib-1.0\DruidManaLib-1.0.lua
+
+DruidManaBar.lua
