@@ -87,9 +87,10 @@ function DruidManaBar:UpdateMaxValues()
 end
 
 function DruidManaBar:UpdatePowerType()
-	if UnitPowerType("player") ~= 0 then
+	if self.loaded and UnitPowerType("player") ~= 0 then
 		self.bar:Show()
 	else
 		self.bar:Hide()
+		self.loaded = true -- so we don't show a mana bar with bogus values
 	end
 end
