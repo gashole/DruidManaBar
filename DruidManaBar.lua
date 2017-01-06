@@ -33,6 +33,7 @@ function DruidManaBar:OnInitialize()
 	local text = bar:CreateFontString("$parentText", "OVERLAY", "TextStatusBarText")
 	text:SetPoint("CENTER", 0, 0)
 	SetTextStatusBarText(bar, text)
+	bar.textLockable = 1
 
 	self.bar = bar
 end
