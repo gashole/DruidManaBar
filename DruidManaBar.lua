@@ -71,6 +71,10 @@ function DruidManaBar:OnEnable()
 	self:UNIT_DISPLAYPOWER()
 end
 
+function DruidManaBar:OnDisable()
+	self.bar:Hide()
+end
+
 function DruidManaBar:UNIT_MANA()
 	if not self.bar:IsShown() then return end
 	if UnitIsUnit("player", arg1) then
