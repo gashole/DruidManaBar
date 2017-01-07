@@ -6,6 +6,11 @@ Displays a mana bar when shapeshifted.
 
 Credit: https://github.com/Aviana/LunaUnitFrames/tree/master/libs/DruidManaLib-1.0
 
+## Slash commands
+
+/druidmanabar, /dmb  
+/druidmanabar moveabove - Move the bar above the player frame
+
 ## Install
 
 1. [Download DruidManaBar](https://github.com/gashole/DruidManaBar/releases/download/current/DruidManaBar.zip)
