@@ -1,3 +1,4 @@
+local _, playerClass = UnitClass("player")
 if playerClass ~= "DRUID" then return end
 
 local DruidManaBar = AceLibrary("AceAddon-2.0"):new("AceConsole-2.0", "AceEvent-2.0", "AceDB-2.0")

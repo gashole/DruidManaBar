@@ -1,3 +1,4 @@
+local _, playerClass = UnitClass("player")
 if playerClass ~= "DRUID" then return end
 
 local L = AceLibrary("AceLocale-2.2"):new("DruidManaBar")
