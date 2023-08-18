@@ -53,47 +53,35 @@ function DruidManaBar:OnEnable()
 		bar:SetScript("OnMouseUp", function(button)
 			this:GetParent():Click(button)
 		end)
+
+		bar:SetScript("OnUpdate", function()
+			local curMana, maxMana = DruidManaLib:GetMana()
+			this:SetMinMaxValues(0, maxMana)
+			this:SetValue(curMana)
+		end)
 		
 		self.bar = bar
 	end
 
 	self:UpdatePosition()
 
-	self:RegisterEvent("UNIT_MANA")
-	self:RegisterEvent("UNIT_MAXMANA")
 	self:RegisterEvent("UNIT_DISPLAYPOWER")
 	self:RegisterEvent("PLAYER_AURAS_CHANGED")
 
-	self:UNIT_DISPLAYPOWER()
+	self:UpdatePowerType()
 end
 
 function DruidManaBar:OnDisable()
 	self.bar:Hide()
 end
 
-function DruidManaBar:UNIT_MANA()
-	if not self.bar:IsShown() then return end
-	if UnitIsUnit("player", arg1) then
-		self:UpdateValue()
-	end
-end
-
-function DruidManaBar:UNIT_MAXMANA()
-	if not self.bar:IsShown() then return end
-	if UnitIsUnit("player", arg1) then
-		self:UpdateMaxValues()
-	end
-end
-
 function DruidManaBar:UNIT_DISPLAYPOWER()
-	self:UpdateMaxValues()
-	self:UpdateValue()
 	self:UpdatePowerType()
 end
 
 function DruidManaBar:PLAYER_AURAS_CHANGED()
 	if not self.bar:IsShown() then return end
-	self:UNIT_DISPLAYPOWER()
+	self:UpdatePowerType()
 end
 
 function DruidManaBar:IsMoveAbove()
@@ -116,17 +104,6 @@ function DruidManaBar:UpdatePosition()
 		self.bar.bd:SetPoint("TOPLEFT", -10, 0)
 		self.bar.bd:SetTexCoord(0.0234375, 0.6875, 1.0, 0.0)
 	end
-end
-
-function DruidManaBar:UpdateValue()
-	local curMana = DruidManaLib:GetMana()
-	self.bar:SetValue(curMana)
-end
-
-function DruidManaBar:UpdateMaxValues()
-	DruidManaLib:MaxManaScript()
-	local _, maxMana = DruidManaLib:GetMana()
-	self.bar:SetMinMaxValues(0, maxMana)
 end
 
 function DruidManaBar:UpdatePowerType()
