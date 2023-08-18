@@ -4,7 +4,7 @@
 
 Displays a mana bar when shapeshifted.
 
-Credit: https://github.com/Aviana/LunaUnitFrames/tree/master/libs/DruidManaLib-1.0
+Credit: https://github.com/Aviana/LunaUnitFrames/tree/1.12.1/libs/DruidManaLib-1.0
 
 ## Slash commands
 
