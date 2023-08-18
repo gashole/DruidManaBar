@@ -7,14 +7,6 @@ local L = AceLibrary("AceLocale-2.2"):new("DruidManaBar")
 
 local TEXTURE = "Interface\\TargetingFrame\\UI-StatusBar"
 
-if string.find(GetRealmName(), "Kronos") then
-	-- Shapeshift cost is subtracted on the Kronos server without
-	-- this function. Overwrite to prevent subtracting twice.
-	function DruidManaLib:Subtract()
-		-- Do nothing
-	end
-end
-
 function DruidManaBar:OnInitialize()
 	self:RegisterDB("DruidManaBarDB")
 	self:RegisterDefaults("profile", { moveAbove = false })
