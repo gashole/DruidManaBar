@@ -55,7 +55,7 @@ function DruidManaBar:OnEnable()
 		end)
 
 		bar:SetScript("OnUpdate", function()
-			local curMana, maxMana = DruidManaLib:GetMana()
+			local curMana, maxMana = self:GetMana()
 			this:SetMinMaxValues(0, maxMana)
 			this:SetValue(curMana)
 		end)
@@ -67,6 +67,8 @@ function DruidManaBar:OnEnable()
 
 	self:RegisterEvent("UNIT_DISPLAYPOWER")
 	self:RegisterEvent("PLAYER_AURAS_CHANGED")
+
+	self.loaded = SUPERWOW_VERSION and true
 
 	self:UpdatePowerType()
 end
@@ -111,6 +113,16 @@ function DruidManaBar:UpdatePowerType()
 		self.bar:Show()
 	else
 		self.bar:Hide()
-		self.loaded = true -- so we don't show a mana bar with bogus values
+		self.loaded = true -- Prevent showing bogus values
 	end
+end
+
+if SUPERWOW_VERSION then
+	DruidManaBar.GetMana = function()
+		local _, curMana = UnitMana("player")
+		local _, maxMana = UnitManaMax("player")
+		return curMana, maxMana
+	end
+else
+	DruidManaBar.GetMana = DruidManaLib.GetMana
 end
