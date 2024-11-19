@@ -16,3 +16,9 @@ Credit: https://github.com/Aviana/LunaUnitFrames/tree/1.12.1/libs/DruidManaLib-1
 1. [Download DruidManaBar](https://github.com/gashole/DruidManaBar/releases/download/current/DruidManaBar.zip)
 2. Extract the zip to an easy to find location such as your Desktop
 3. Move the DruidManaBar folder into your AddOns folder
+
+## Install SuperWoW (Optional)
+
+With SuperWoW, the mana values are accurate; without, the values are approximate.
+
+https://github.com/balakethelock/SuperWoW
