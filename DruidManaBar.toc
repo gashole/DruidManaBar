@@ -1,0 +1,9 @@
+## Interface: 11200
+## Title: DruidManaBar
+## Author: gashole
+## Notes: Displays a mana bar when shapeshifted.
+## Version: GIT
+## SavedVariablesPerCharacter: DruidManaLibDB
+
+DruidManaLib.lua
+DruidManaBar.lua
