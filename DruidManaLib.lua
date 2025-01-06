@@ -19,21 +19,23 @@ local function hasBuffTexture(texture)
     return false
 end
 
-local function calcManaRegen()
+local function calcManaRegen(isFiveSecRegen)
     local base = (DruidManaLib.db.spirit / 5) + 15
-    local innervateMult = DruidManaLib.db.hasInnervate and 5 or 1
-    return (base * innervateMult) + DruidManaLib.db.equipBonus
-end
+    local multiplier = 1
 
-local function calcShiftRegen()
-    local base = (DruidManaLib.db.spirit / 5) + 15
-    local reflectionBonus = 0.05 * DruidManaLib.db.reflectionRank
-    return (base * reflectionBonus) + DruidManaLib.db.equipBonus
+    if DruidManaLib.db.hasInnervate then
+        multiplier = 5
+    elseif isFiveSecRegen then
+        multiplier = 0.05 * DruidManaLib.db.reflectionRank
+    end
+
+    return (base * multiplier) + DruidManaLib.db.equipBonus
 end
 
 local function getShiftManaCost()
     for form = 1, GetNumShapeshiftForms() do
         local icon = GetShapeshiftFormInfo(form)
+
         if icon and (icon == BEAR_FORM_TEXTURE or icon == CAT_FORM_TEXTURE) then
             DruidManaLib.tooltip:SetShapeshift(form)
             local text = _G["DruidManaLibTooltipTextLeft2"]:GetText()
@@ -73,6 +75,7 @@ local function getEquipManaBonus()
             end
         end
     end
+
     return bonus
 end
 
@@ -167,15 +170,15 @@ function DruidManaLib:UpdateMana()
         return
     end
 
-    local elapsed = GetTime() - self.db.lastCast
-
     if self.db.usingMana ~= usingMana then return end
 
+    local elapsed = GetTime() - self.db.lastCast
     local regen = 0
+
     if elapsed > 5 or self.db.hasInnervate then
         regen = calcManaRegen()
     else
-        regen = calcShiftRegen()
+        regen = calcManaRegen(true)
     end
 
     self.db.mana = math.min(math.floor(self.db.mana + regen), self.db.maxMana)
