@@ -5,12 +5,13 @@ local _G = getfenv()
 
 local DruidManaLib = {}
 
-local BEAR_FORM_TEXTURE = "Interface\\Icons\\Ability_Racial_BearForm"
-local CAT_FORM_TEXTURE = "Interface\\Icons\\Ability_Druid_CatForm"
+local BEAR_FORM = 1
+
+local REFLECTION_TALENT_TAB = 3
+local REFLECTION_TALENT_SLOT = 6
+
 local INNERVATE_TEXTURE = "Interface\\Icons\\Spell_Nature_Lightning"
 -- local RUNE_OF_METAMORPHOSIS_TEXTURE = "Interface\\Icons\\Inv_Misc_Rune_06"
-
-local REFLECTION_TALENT_TAB, REFLECTION_TALENT_SLOT = 3, 6
 
 local function hasBuffTexture(texture)
     for i = 1, 32 do
@@ -33,17 +34,19 @@ local function calcManaRegen(isFiveSecRegen)
 end
 
 local function getShiftManaCost()
-    for form = 1, GetNumShapeshiftForms() do
-        local icon = GetShapeshiftFormInfo(form)
+    local cost = 0
 
-        if icon and (icon == BEAR_FORM_TEXTURE or icon == CAT_FORM_TEXTURE) then
-            DruidManaLib.tooltip:SetShapeshift(form)
-            local text = _G["DruidManaLibTooltipTextLeft2"]:GetText()
-            local _, _, cost = string.find(text, "(%d+)")
-            if cost then return tonumber(cost) end
+    if GetShapeshiftFormInfo(BEAR_FORM) then
+        DruidManaLib.tooltip:SetShapeshift(BEAR_FORM)
+        local text = _G["DruidManaLibTooltipTextLeft2"]:GetText()
+
+        if text then
+            local _, _, num = string.find(text, "(%d+)")
+            if num then cost = tonumber(num) end
         end
     end
-    return 0
+
+    return cost
 end
 
 local function getEquipManaBonus()
