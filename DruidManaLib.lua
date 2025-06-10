@@ -20,13 +20,13 @@ local function hasBuffTexture(texture)
     return false
 end
 
-local function calcManaRegen(isFiveSecRegen)
+local function calcManaRegen(fiveSecRegen)
     local base = (DruidManaLib.db.spirit / 5) + 15
     local multiplier = 1
 
     if DruidManaLib.db.hasInnervate then
         multiplier = 5
-    elseif isFiveSecRegen then
+    elseif fiveSecRegen then
         multiplier = 0.05 * DruidManaLib.db.reflectionRank
     end
 
@@ -137,10 +137,24 @@ function DruidManaLib:OnEvent()
         self:UpdateLastCast()
     elseif event == "UNIT_MANA" and arg1 == "player" then
         self:UpdateMana()
+
+        if not self.db.usingMana then
+            local elapsed = GetTime() - self.db.lastCast
+            local regen = calcManaRegen(elapsed <= 5 and not self.db.hasInnervate)
+
+            self.db.mana = math.min(math.floor(self.db.mana + regen), self.db.maxMana)
+        end
     elseif event == "UNIT_MAXMANA" and arg1 == "player" then
         self:UpdateMaxMana()
     elseif event == "UNIT_DISPLAYPOWER" and arg1 == "player" then
+        self:UpdateMana()
         self:UpdatePowerType()
+
+        if not self.db.usingMana then
+            self:UpdateShiftMana()
+            self.db.mana = math.max(self.db.mana - self.db.shiftMana, 0)
+        end
+
         self:UpdateReflectionRank()
     elseif event == "PLAYER_AURAS_CHANGED" then
         self:UpdateMaxMana()
@@ -150,8 +164,10 @@ function DruidManaLib:OnEvent()
         self:UpdateStats()
         self:UpdateEquipMana()
     elseif event == "PLAYER_ENTERING_WORLD" then
+        self:UpdateMana()
         self:UpdateStats()
-        self:UpdatePowerType(true)
+        self:UpdatePowerType()
+        self:UpdateShiftMana()
         self:UpdateEquipMana()
         self:UpdateReflectionRank()
     elseif event == "PLAYER_LOGOUT" then
@@ -166,25 +182,8 @@ function DruidManaLib:UpdateLastCast()
 end
 
 function DruidManaLib:UpdateMana()
-    local usingMana = self:IsUsingMana()
-
-    if usingMana then
-        self.db.mana = UnitMana("player")
-        return
-    end
-
-    if self.db.usingMana ~= usingMana then return end
-
-    local elapsed = GetTime() - self.db.lastCast
-    local regen = 0
-
-    if elapsed > 5 or self.db.hasInnervate then
-        regen = calcManaRegen()
-    else
-        regen = calcManaRegen(true)
-    end
-
-    self.db.mana = math.min(math.floor(self.db.mana + regen), self.db.maxMana)
+    if not self:IsUsingMana() then return end
+    self.db.mana = UnitMana("player")
 end
 
 function DruidManaLib:UpdateMaxMana()
@@ -208,19 +207,12 @@ function DruidManaLib:UpdateStats()
     self.db.spirit = spi
 end
 
-function DruidManaLib:UpdatePowerType(skipShiftMana)
+function DruidManaLib:UpdatePowerType()
     self.db.powerType = UnitPowerType("player")
     self.db.usingMana = self.db.powerType == 0
-
-    if self.db.usingMana or skipShiftMana then return end
-
-    self:UpdateShiftMana()
 end
 
-function DruidManaLib:UpdateShiftMana()
-    self.db.shiftMana = getShiftManaCost()
-    self.db.mana = math.max(self.db.mana - self.db.shiftMana, 0)
-end
+function DruidManaLib:UpdateShiftMana() self.db.shiftMana = getShiftManaCost() end
 
 function DruidManaLib:UpdateEquipMana() self.db.equipBonus = getEquipManaBonus() end
 
