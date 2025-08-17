@@ -1,7 +1,7 @@
 local _, class = UnitClass("player")
 if class ~= "DRUID" then return end
 
-if SUPERWOW_VERSION then
+if SUPERWOW_VERSION or TURTLE_WOW_VERSION then
     local function getManaValue(func)
         if DruidManaLib:IsUsingMana() then
             return func("player")
@@ -14,6 +14,13 @@ if SUPERWOW_VERSION then
     function DruidManaLib:GetMana() return getManaValue(UnitMana) end
 
     function DruidManaLib:GetMaxMana() return getManaValue(UnitManaMax) end
+
+    for _, f in ipairs { PlayerFrameAlternatePowerBar, PlayerFrameAlternatePowerBarText } do
+        if f then
+            f.Show = function() end
+            f:Hide()
+        end
+    end
 else
     DruidManaLib:Init()
 end
